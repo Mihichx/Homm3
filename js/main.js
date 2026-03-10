@@ -27,7 +27,7 @@ class Scene {
     for (let i = 0; i < this.rows; i++) {
       this.matrix[i] = []; // Создаем строку
       for (let j = 0; j < this.cols; j++) {
-        this.matrix[i][j] = 1; // В каждый столбец пишем 0 (Вода)
+        this.matrix[i][j] = 1;
       }
     }
   }
@@ -52,6 +52,7 @@ class Screen {
     this.scene = scene; // Связываем экран с данными сцены
     this.container = document.getElementById(containerId); // Где рисовать таблицу
     this.b = false;
+    this.units = [];
   }
 
   // Рисует всю таблицу с нуля (вызывается при старте или загрузке файла)
@@ -86,7 +87,6 @@ class Screen {
     if (data) {
         if (typeElement) typeElement.innerText = data.name;
         if (descElement) descElement.innerText = data.description;
-        console.log(`координаты клетки: [${i}, ${j}]. Тип: ${data.name}`);
     } else {
         // Опционально: обработка случая, когда данные не найдены
         if (typeElement) typeElement.innerText = "Неизвестно";
@@ -97,33 +97,39 @@ class Screen {
 
   // Обработчик клика по таблице
   delegateHandler(event) {
-    const target = event.target; // Элемент, по которому реально попал клик
-    
-    // Если кликнули не по ячейке (а, например, по рамке таблицы), выходим
-    if (target.tagName !== 'TD') return;
+    const td = event.target.closest('td');
+    if (!td) return; // Если кликнули мимо ячейки — выходим
 
-    // Извлекаем координаты из data-coord (превращаем "5_10" в числа 5 и 10)
-    const [i, j] = target.dataset.coord.split('_').map(Number);
+    const [i, j] = td.dataset.coord.split('_').map(Number);
 
     if (flags == true) {
-      this.updateCell(target, i, j);
+      this.updateCell(td, i, j);
       this.displayInfo(i, j, this.scene.getCell(i, j));
     } else {
-      if (this.b == false) {
-        this.updateCell1(target, i, j);
-        this.displayInfo(i, j, this.scene.getCell(i, j));
-      } else {
-        this.updateCell2(target, i, j);
-        this.b = false;
+      // Если в руках ничего нет (this.b == false) И в клетке есть юнит
+      if (this.b === false) {
+          this.updateCell1(td, i, j); // Забираем из ячейки
+          this.displayInfo(i, j, this.scene.getCell(i, j));
+      } 
+      // Если в руках УЖЕ есть юнит (this.b == true)
+      else if (this.b === true) {
+          this.updateCell2(td, i, j); // Кладем в новую ячейку
       }
     }
-  }
+}
 
   // МЕНЯЕМ ТОЛЬКО ОДНУ ЯЧЕЙКУ (без перерисовки всей таблицы)
   updateCell(tdElement, i, j) {
-    console.log(0);
     // Берем выбранный ID ландшафта из выпадающего списка
     let selected = parseInt(document.getElementById('terrain-select').value);
+    if (selected == 5) {
+      let img = document.createElement('img');
+      img.src = './img/deadlock.png';
+      img.classList.add('img-size');
+      tdElement.appendChild(img);
+      this.units.push(`${i}_${j}`);
+      return;
+    }
     
     // 1. Обновляем "мозг" программы (массив в Scene)
     this.scene.setCell(i, j, selected);
@@ -132,25 +138,27 @@ class Screen {
     tdElement.className = 'terrain-' + selected;   
   }
   updateCell1(tdElement, i, j) {
-    console.log(tdElement.className);
-    this.a = tdElement.className;
-    if (this.a !== "terrain-6") {return}
-    // 1. Обновляем "мозг" программы (массив в Scene)
-    this.scene.setCell(i, j, 0);
-    
-    // 2. Обновляем внешний вид (просто меняем класс у конкретного TD)
-    tdElement.className = 'terrain-0';
-    this.b = true;
-    console.log(1);
+    const img = tdElement.querySelector('img');
+    if (img) {
+      this.a = img;    // Сохраняем КАРТИНКУ в переменную "a"
+      img.remove();    // Удаляем КАРТИНКУ из HTML
+      this.b = true;   // Теперь юнит "в руках"
+      console.log("Юнит взят из:", i, j);
+    }
   }
+
   updateCell2(tdElement, i, j) {
-    console.log(2);
-    let f = Number(this.a.at(-1));
-    // 1. Обновляем "мозг" программы (массив в Scene)
-    this.scene.setCell(i, j, f);
-    
-    // 2. Обновляем внешний вид (просто меняем класс у конкретного TD)
-    tdElement.className = this.a;   
+    if (this.a) {
+      // Если в целевой ячейке уже кто-то есть, можно либо запретить, 
+      // либо очистить её перед вставкой:
+      tdElement.innerHTML = ''; 
+      
+      tdElement.appendChild(this.a); // Вставляем сохраненную картинку
+      this.a = null;                 // Руки пусты
+      this.b = false;                // Сбрасываем флаг
+      console.log("Юнит поставлен в:", i, j);
+      console.log(this.units);
+    }
   }
 }
 
@@ -205,7 +213,7 @@ function loadedData(content) {
   // 2. Ищем и меняем значение (проходим по двумерному массиву)
   for (let i = 0; i < loadedMatrix.length; i++) {
     for (let j = 0; j < loadedMatrix[i].length; j++) {
-      if (loadedMatrix[i][j] > 6  || loadedMatrix[i][j] < 0) {
+      if (loadedMatrix[i][j] > 5  || loadedMatrix[i][j] < 0) {
         loadedMatrix[i][j] = 1;
       }
     }
