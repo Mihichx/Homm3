@@ -2,17 +2,19 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MAP EDITOR</title>
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" type="text/css" href="./css/terraincss.php">
-    
+    <link rel="icon" href="./img/icon.png">
     <script defer src="js/system.js"></script>
     <script defer src="js/type.js"></script>
+    <script defer src="./js/scene.js"></script>
+    <script defer src="./js/screen.js"></script>
     <script defer src="./js/main.js"></script>
 </head>
 <body>
-    <main class="map-main">
+    <main class="map-main"> 
         <h2>Карта</h2>
         <div class="controls">
             <?php
