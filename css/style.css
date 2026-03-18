@@ -45,8 +45,8 @@ tr:hover {
   margin: 20px 0;
 }
 .map-table td {
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   border: 2px solid #333;
   background-size: cover;
   background-position: center;
@@ -65,8 +65,8 @@ tr:hover {
 }
 
 .img-size {
-    width: 40px;
-    height: 40px;
+    width: 70px;
+    height: 70px;
 }
 
 .border {

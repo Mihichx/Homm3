@@ -46,7 +46,7 @@ typeList
                     id: fullUnit?.id ?? Number(item.type),
                     name: fullUnit?.name ?? item.name,
                     type: fullUnit?.name ?? item.name,
-                    icon: fullUnit?.icon || fullUnit?.img || './img/icon.png',
+                    icon: `./img/${fullUnit?.icon}`,
                     health: fullUnit?.Health ?? null,
                     speed: fullUnit?.speed ?? null,
                     attack: fullUnit?.Attack ?? null,
