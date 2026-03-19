@@ -139,41 +139,46 @@ class Screen {
     return;
   }
 
-  updateCell1(tdElement) {
+updateCell1(tdElement) {
     const img = tdElement.querySelector('img');
     if (img) {
-      // берем юнита из модели, запоминаем и удаляем из клетки
-      const [i, j] = tdElement.dataset.coord.split('_').map(Number);
-      this.taken_unit = this.scene.getCell(i, j).unit;
-      this.scene.setCell(i, j, null, 'unit');
-
-      img.classList.add('border');  // Присваиваем выделение
-      this.taken = true;            // Теперь юнит "в руках"
-      this.taken_img = img;         // Сохраняем img в переменную для переноса в DOM
+        const [i, j] = tdElement.dataset.coord.split('_').map(Number);
+        
+        this.taken_unit = this.scene.getCell(i, j).unit;
+        this.startCoords = { i, j }; // ПУНКТ 9: Запоминаем откуда идем
+        
+        img.classList.add('border');
+        this.taken = true;
+        this.taken_img = img;
     }
-  }
+}
 
-  updateCell2(tdElement) {
+updateCell2(tdElement) {
     if (this.taken_unit && this.taken_img) {
-      const [i, j] = tdElement.dataset.coord.split('_').map(Number);
-      const targetCell = this.scene.getCell(i, j);
+        const [i, j] = tdElement.dataset.coord.split('_').map(Number);
+        const targetCell = this.scene.getCell(i, j);
 
-      // нельзя выпустить юнита в занятую клетку
-      if (targetCell && targetCell.unit) {
-        alert('Клетка занята другим юнитом, выберите свободную клетку.');
-        return;  // оставляем юнита в руках
-      }
+        if (targetCell && targetCell.unit) {
+            alert('Клетка занята!');
+            return;
+        }
 
-      // ставим юнита в новую клетку в модели
-      this.scene.setCell(i, j, this.taken_unit, 'unit');
+        // Проверяем линейность и выносливость через Scene
+        if (this.scene.checkMove(this.startCoords, { i, j })) {
+            // Если всё ок, перемещаем в модели
+            this.scene.setCell(this.startCoords.i, this.startCoords.j, null, 'unit'); // Удаляем со старой
+            this.scene.setCell(i, j, this.taken_unit, 'unit'); // Ставим на новую
 
-      // обновляем DOM: перенос картинки
-      tdElement.appendChild(this.taken_img);
-      this.taken_img.classList.remove('border');  // Убираем выделение
-
-      this.taken_img = null;                      // Опустошаем переменную
-      this.taken_unit = null;
-      this.taken = false;                         // Сбрасываем флаг (рука пуста)
+            // Обновляем DOM
+            tdElement.appendChild(this.taken_img);
+            this.taken_img.classList.remove('border');
+            
+            // Сброс состояния
+            this.taken = false;
+            this.taken_unit = null;
+            this.taken_img = null;
+            this.startCoords = null;
+        }
     }
   }
 }
