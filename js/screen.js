@@ -26,7 +26,7 @@ class Screen {
         td.dataset.coord = `${i}_${j}`;
         if (cell.unit) {
           let img = document.createElement('img');
-          img.src = cell.unit.img || './img/icon.png';
+          img.src = cell.unit.icon;
           img.classList.add('img-size');
           td.appendChild(img);
         }
@@ -69,6 +69,7 @@ class Screen {
       if (descElement) descElement.innerText += `\n Юнит: ${unitName} ${unitStats.join(', ')}`;
     }
   }
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -124,12 +125,22 @@ class Screen {
 
       // сохраняем в модель
       this.scene.setCell(i, j, { ...unit }, 'unit');
+      unit_real_mas.push({
+          id: this.scene.getCell(i, j).unit.id,
+          unit: this.scene.getCell(i, j).unit,
+          coord: `${i}-${j}`,
+          stamina: {
+            current: unit.stamina.max,
+            max: unit.stamina.max
+          },
+      });
+      console.table(unit_real_mas);
 
       // Обновляем DOM (рисуем иконку юнита)
       tdElement.innerHTML = '';
       tdElement.className = 'terrain-' + (this.scene.getCell(i, j).terrain || 1);
       const img = document.createElement('img');
-      img.src = unit.icon || unit.img || './img/icon.png';
+      img.src = unit.icon;
       img.classList.add('img-size');
       tdElement.appendChild(img);
 
@@ -139,46 +150,55 @@ class Screen {
     return;
   }
 
-updateCell1(tdElement) {
+  updateCell1(tdElement) {
     const img = tdElement.querySelector('img');
     if (img) {
-        const [i, j] = tdElement.dataset.coord.split('_').map(Number);
-        
-        this.taken_unit = this.scene.getCell(i, j).unit;
-        this.startCoords = { i, j }; // ПУНКТ 9: Запоминаем откуда идем
-        
-        img.classList.add('border');
-        this.taken = true;
-        this.taken_img = img;
+      const [i, j] = tdElement.dataset.coord.split('_').map(Number);
+      
+      this.taken_unit = this.scene.getCell(i, j).unit;
+      this.startCoords = { i, j }; // ПУНКТ 9: Запоминаем откуда идем
+      for (const h of unit_real_mas) {
+        if (h.coord == `${i}-${j}`) {
+          this.u = h;
+        }
+      }
+      
+      img.classList.add('border');
+      this.taken = true;
+      this.taken_img = img;
     }
 }
 
-updateCell2(tdElement) {
+  updateCell2(tdElement) {
     if (this.taken_unit && this.taken_img) {
-        const [i, j] = tdElement.dataset.coord.split('_').map(Number);
-        const targetCell = this.scene.getCell(i, j);
+      const [i, j] = tdElement.dataset.coord.split('_').map(Number);
+      const targetCell = this.scene.getCell(i, j);
 
-        if (targetCell && targetCell.unit) {
-            alert('Клетка занята!');
-            return;
-        }
+      if (targetCell && targetCell.unit) {
+          alert('Клетка занята!');
+          return;
+      }
 
-        // Проверяем линейность и выносливость через Scene
-        if (this.scene.checkMove(this.startCoords, { i, j })) {
-            // Если всё ок, перемещаем в модели
-            this.scene.setCell(this.startCoords.i, this.startCoords.j, null, 'unit'); // Удаляем со старой
-            this.scene.setCell(i, j, this.taken_unit, 'unit'); // Ставим на новую
+      // Проверяем линейность и выносливость через Scene
+      if (this.scene.checkMove(this.startCoords, { i, j })) {
+        // Если всё ок, перемещаем в модели
+        this.scene.setCell(this.startCoords.i, this.startCoords.j, null, 'unit'); // Удаляем со старой
+        this.scene.setCell(i, j, this.taken_unit, 'unit'); // Ставим на новую
 
-            // Обновляем DOM
-            tdElement.appendChild(this.taken_img);
-            this.taken_img.classList.remove('border');
-            
-            // Сброс состояния
-            this.taken = false;
-            this.taken_unit = null;
-            this.taken_img = null;
-            this.startCoords = null;
-        }
+        // Обновляем DOM
+        tdElement.appendChild(this.taken_img);
+        this.taken_img.classList.remove('border');
+        
+        // Сброс состояния
+        this.taken = false;
+        this.taken_unit = null;
+        this.taken_img = null;
+        this.startCoords = null;
+
+        this.u.coord = `${i}-${j}`;
+        console.log(this.u);
+        console.table(unit_real_mas);
+      }
     }
   }
 }

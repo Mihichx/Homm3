@@ -7,6 +7,8 @@ let mapData = {
 };
 
 let flags = true;                                 // Разрешено ли редактирование прямо сейчас
+let end_step = false;
+let unit_real_mas = [];
 let scene = new Scene(mapData);                   // Создаем логику
 let screen = new Screen(scene, 'map-container');  // Создаем экран
 

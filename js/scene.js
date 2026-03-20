@@ -37,6 +37,7 @@ class Scene {
     if (!cell) return;
     cell[field] = value;
   }
+
   checkMove(from, to) {
     const unit = this.matrix[from.i][from.j].unit;
     if (!unit) return false;
@@ -53,12 +54,28 @@ class Scene {
     const distance = rowDiff + colDiff;
 
     // ПУНКТ 10: Проверка и уменьшение выносливости
-    if (unit.stamina.current >= distance) {
-        unit.stamina.current -= distance;
+    for (const h of unit_real_mas) {
+      if (h.coord == `${from.i}-${from.j}`) {
+        this.u = h;
+      }
+    }
+
+    if (end_step) {
+      this.u.stamina.current = this.u.stamina.max;
+      end_step = false;
+    }
+
+    if (this.u.stamina.current >= distance) {
+        this.u.stamina.current -= distance;
         return true;
     } else {
         alert(`Недостаточно выносливости! Нужно ${distance}, осталось ${unit.stamina.current}`);
+        screen.taken_img.classList.remove('border');
+        screen.taken = false;
+        screen.taken_unit = null;
+        screen.taken_img = null;
+        screen.startCoords = null;
         return false;
     }
-}
+  }
 }
