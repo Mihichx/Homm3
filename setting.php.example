@@ -1,6 +1,7 @@
 <?php
 	// Настройки для подключения к бд
 	$dbAuth = [
+		'host'     => 'your',
 		'base'     => 'your',
 		'user'     => 'your',
 		'password' => 'your'
