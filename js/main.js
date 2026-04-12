@@ -15,8 +15,9 @@ let mapData = {
 };
 
 let flags = true;                                 // Разрешено ли редактирование прямо сейчас
-let end_step = false;
-let unit_real_mas = [];
+let flags_unit_delate = false;                    // Разрешено ли удаление юнитов прямо сейчас
+let end_step = false;                             // Был ли завершён ход (для восстановления выносливости юнитов)
+let unit_real_mas = [];                           // Массив реальных юнитов на карте (для проверки выносливости)
 let scene = new Scene(mapData);                   // Создаем логику
 let screen = new Screen(scene, 'map-container');  // Создаем экран
 

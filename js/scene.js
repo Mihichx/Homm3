@@ -57,14 +57,6 @@ class Scene {
       }
     }
 
-    if (end_step) {
-      for (const current_unit of unit_real_mas) {
-        console.log(current_unit);
-        current_unit.stamina.current = current_unit.stamina.max;
-      }
-      end_step = false;
-    }
-
     if (this.unit && this.unit.stamina.current >= distance) {
         this.unit.stamina.current -= distance;
         return true;

@@ -7,7 +7,9 @@ document.getElementById('gen-scene').onclick = function() {
 
     scene.generate(width, height);  // Сбрасываем массив в 1 с текущим размером
     screen.draw();  // Рисуем заново    
-    document.getElementById('create-map').innerText = 'Создание карты';          // Меняем заголовок
+    unit_real_mas = [];  // Очищаем массив юнитов
+    screen.unitMapByCoord.clear();  // Очищаем Map координат юнитов
+    document.getElementById('create-map').innerText = 'Создание карты';    // Меняем заголовок
     document.getElementById('info-coords').innerText = 'Выберите клетку';  // Стираем данные информации
     document.getElementById('info-type').innerText = '';                   // 
     document.getElementById('info-desc').innerText = '';                   // 
@@ -38,6 +40,16 @@ document.getElementById('end').onclick = function() {
 
 // Кнопка "Завершить ход"
 document.getElementById('end_step').onclick = function() {
-    end_step = true;
+    for (const current_unit of unit_real_mas) {
+        console.log(current_unit);
+        current_unit.stamina.current = current_unit.stamina.max;
+    }
+    document.getElementById('info-type').innerText = '';                  
+    document.getElementById('info-desc').innerText = '';
     alert("Ход завершён");
 };
+
+// Кнопка "Удалить юнит"
+document.getElementById('delate_unit').onclick = function() {
+    flags_unit_delate = true;  // Разрешаем удаление юнитов
+}

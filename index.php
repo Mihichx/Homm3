@@ -37,6 +37,7 @@
             <select id="unit-select" class="poly-btn"><option value="">Выберите юнита</option></select>
 
             <button id="end">Закончить редактирование</button>
+            <button id="delate_unit">Удалить юнита</button>
 
             <div id="inspector" class="inspector-panel">
                 <h3>Информация о клетке</h3>
