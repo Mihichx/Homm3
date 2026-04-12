@@ -1,6 +1,11 @@
 <?php
 session_start();
-include __DIR__ . '/setting.php';
+
+if (file_exists(__DIR__ . '/setting.php')) {
+    include_once __DIR__ . '/setting.php';
+} else {
+    include_once __DIR__ . '/setting_local.php';
+}
 
 // Whitelist для защиты от SQL-инъекций
 $allowedTables = ['terrain', 'units'];

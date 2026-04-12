@@ -1,10 +1,20 @@
 // Сохранение карты
-document.getElementById('save').onclick = function() {
-    // Превращаем матрицу в строку JSON
-    let mapData = JSON.stringify(scene.matrix);
-    // Скачиваем файл
-    system.save(mapData, 'my_strategy_map.json');
-};
+if(document.getElementById('save')) {
+    document.getElementById('save').onclick = function() {
+        let mapData = JSON.stringify(scene.matrix);    // Превращаем матрицу в строку JSON
+        system.save(mapData, 'my_strategy_map.json');  // Скачиваем файл
+    };
+}
+if(document.getElementById('save1')) {
+    document.getElementById('save1').onclick = function(e) {
+        e.preventDefault();
+
+        let mapData = JSON.stringify(scene.matrix);    // Превращаем матрицу в строку JSON
+        localStorage.setItem('save_map', mapData);     // Скачиваем файл в браузерное хранилище
+
+        window.location.href = './map_game.php';
+    };
+}
 
 // Загрузка из файла
 if (document.getElementById('fileLoad')) {

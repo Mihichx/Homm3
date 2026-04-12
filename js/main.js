@@ -14,9 +14,7 @@ let mapData = {
     height: validateMapSize(urlParams.get('map_height')),
 };
 
-let flags = true;                                 // Разрешено ли редактирование прямо сейчас
 let flags_unit_delate = false;                    // Разрешено ли удаление юнитов прямо сейчас
-let end_step = false;                             // Был ли завершён ход (для восстановления выносливости юнитов)
 let unit_real_mas = [];                           // Массив реальных юнитов на карте (для проверки выносливости)
 let scene = new Scene(mapData);                   // Создаем логику
 let screen = new Screen(scene, 'map-container');  // Создаем экран
@@ -58,7 +56,7 @@ typeList
                     id: fullUnit?.id ?? Number(item.type),
                     name: fullUnit?.name ?? item.name,
                     type: fullUnit?.name ?? item.name,
-                    icon: `./img/${fullUnit?.icon}`,
+                    icon: `./template/default/img/${fullUnit?.icon}`,
                     health: fullUnit?.Health ?? null,
                     speed: unitSpeed,
                     stamina: {

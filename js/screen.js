@@ -2,6 +2,7 @@
   SCREEN: Отвечает за визуализацию (HTML/DOM)
   Рисует таблицу и обрабатывает клики пользователя.
 */
+let flags = true;  // Разрешено ли редактирование прямо сейчас
 class Screen {
   constructor(scene, containerId) {
     this.scene = scene;                                        // Связываем экран с данными сцены
@@ -20,6 +21,33 @@ class Screen {
     for (let i = 0; i < this.scene.matrix.length; i++) {
       let tr = document.createElement('tr');
       for (let j = 0; j < this.scene.matrix[i].length; j++) {
+        let td = document.createElement('td');
+
+        const cell = this.scene.getCell(i, j);
+        td.className = 'terrain-' + cell.terrain;
+        td.dataset.coord = `${i}_${j}`;
+        if (cell.unit) {
+          let img = document.createElement('img');
+          img.src = cell.unit.icon;
+          img.classList.add('img-size');
+          td.appendChild(img);
+        }
+        tr.appendChild(td);  // Добавление ячейки(td) в строку(tr)
+      }
+      table.appendChild(tr);  // Добавление строки(tr) в таблицу
+    }
+    this.container.innerHTML = '';  // Очищает контейнер
+    this.container.appendChild(table);  // Добавляем таблицу в контейнер
+  }
+
+  draw_map_game(matrix) {
+    let table = document.createElement('table');
+    table.className = 'map-table';
+    table.onclick = (e) => this.delegateHandler(e);
+
+    for (let i = 0; i < matrix.length; i++) {
+      let tr = document.createElement('tr');
+      for (let j = 0; j < matrix[i].length; j++) {
         let td = document.createElement('td');
 
         const cell = this.scene.getCell(i, j);
