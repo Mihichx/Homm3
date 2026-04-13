@@ -2,7 +2,6 @@
   SCREEN: Отвечает за визуализацию (HTML/DOM)
   Рисует таблицу и обрабатывает клики пользователя.
 */
-let flags = true;  // Разрешено ли редактирование прямо сейчас
 class Screen {
   constructor(scene, containerId) {
     this.scene = scene;                                        // Связываем экран с данными сцены

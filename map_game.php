@@ -1,24 +1,11 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Homm3</title>
-    <link rel="stylesheet" href="./template/default/css/style.css">
-    <link rel="stylesheet" type="text/css" href="./template/default/css/terraincss.php">
-    <link rel="icon" href="./template/default/img/icon.png">
-    <script defer src="./template/default/js/system.js"></script>
-    <script defer src="./template/default/js/save_loading.js"></script>
-    <script defer src="./template/default/js/type.js"></script>
-    <script defer src="./template/default/js/button.js"></script>
-    <script defer src="./template/default/js/scene.js"></script>
-    <script defer src="./template/default/js/screen.js"></script>
-</head>
+<?  
+    $hide_script_main = true;
+    include_once './template/default/head.php';
+?>
 <script>
     let appScene;
     let appScreen;
     let matrix = null;
-    flags = false;
 
     window.onload = function() {
         let saveMap = localStorage.getItem('save_map');
@@ -45,9 +32,6 @@
 <main class="map-main"> 
     <h2 id="create-map">Готовая карта</h2>
     <div class="controls">
-        <input type="file" id="fileLoad">
-
-
         <div id="inspector" class="inspector-panel">
             <h3>Информация о клетке</h3>
             <p>Координаты: <span id="info-coords">Выберите клетку</span></p>

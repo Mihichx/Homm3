@@ -1,7 +1,7 @@
 <?php
 	// Настройки для подключения к бд
 	$dbAuth = [
-		'base'     => 'localhost',
+		'base'     => 'homm3',
 		'user'     => 'root',
 		'password' => ''
 	];

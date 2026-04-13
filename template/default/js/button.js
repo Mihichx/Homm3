@@ -2,6 +2,7 @@ const gen_scene = document.getElementById('gen-scene') ?? null;
 const end = document.getElementById('end') ?? null;
 const end_step_elm = document.getElementById('end_step') ?? null;
 const delate_unit = document.getElementById('delate_unit') ?? null;
+let flags = true;
 
 // Кнопка "Генерировать/Очистить"
 if(gen_scene) {
