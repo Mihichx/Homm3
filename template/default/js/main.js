@@ -62,7 +62,7 @@ unit_real_mas.forEach(unit => {
 // Scene сама поймет: брать currentMatrix или генерировать новую
 let scene = new Scene(currentMatrix ? { ...mapData, matrix: currentMatrix } : mapData);
 let screen = new Screen(scene, 'map-container');
-let flags_unit_delate = false; 
+let flags_unit_delete = false; 
 let flags = true;
 window.unitMap = {};
 

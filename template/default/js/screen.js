@@ -21,7 +21,6 @@ class Screen {
   draw() {
     let table = document.createElement('table');
     table.className = 'map-table';
-    table.onclick = (e) => this.delegateHandler(e);
 
     for (let i = 0; i < this.scene.matrix.length; i++) {
       let tr = document.createElement('tr');
@@ -184,7 +183,7 @@ class Screen {
     const unitSelectValue = unitSelect ? parseInt(unitSelect.value, 10) : 0;
 
     // 1. РЕЖИМ УДАЛЕНИЯ
-    if (typeof flags_unit_delate !== 'undefined' && flags_unit_delate) {
+    if (typeof flags_unit_delete !== 'undefined' && flags_unit_delete) {
       if (this.scene.getCell(i, j).unit) {
         this.scene.setCell(i, j, null, 'unit'); // Удаляем из модели
         this.unitMapByCoord.delete(`${i}_${j}`); // Удаляем из Map
@@ -195,7 +194,7 @@ class Screen {
           entry => !(entry.coord.i === i && entry.coord.j === j)
         );
         
-        flags_unit_delate = false; // Выключаем режим удаления
+        flags_unit_delete = false; // Выключаем режим удаления
       }
       return;
     }
@@ -210,10 +209,6 @@ class Screen {
     // 3. УСТАНОВКА ЮНИТА
     if (!isNaN(unitSelectValue) && unitSelectValue > 0) {
       // Если в клетке УЖЕ есть любой юнит — просто выходим без ошибки
-      if (this.scene.getCell(i, j).unit) {
-        console.log(`Клетка ${i}_${j} уже занята юнитом. Пропуск.`);
-        return; я 
-      }
 
       const unitTemplate = window.unitMap && window.unitMap[unitSelectValue];
       if (!unitTemplate) {
@@ -231,8 +226,8 @@ class Screen {
         unit: newUnit,
         coord: { i, j },
         stamina: {
-          current: newUnit.stamina?.max || 10,
-          max: newUnit.stamina?.max || 10
+          current: newUnit.stamina?.max,
+          max: newUnit.stamina?.max
         }
       };
 

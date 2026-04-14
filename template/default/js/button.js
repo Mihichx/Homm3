@@ -46,6 +46,6 @@ if(delate_unit) {
     delate_unit.onclick = function() {
         document.getElementById('terrain-select').value = '';  // Сбрасываем селект
         document.getElementById('unit-select').value = '';     // 
-        flags_unit_delate = true;  // Разрешаем удаление юнитов
+        flags_unit_delete = true;  // Разрешаем удаление юнитов
     }
 }
