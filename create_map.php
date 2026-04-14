@@ -21,7 +21,6 @@
         <select id="terrain-select" class="poly-btn"><option value="">Выберите ландшафт</option></select>
         <select id="unit-select" class="poly-btn"><option value="">Выберите юнита</option></select>
 
-        <button type="submit" id="save1" onclick="system.save(document.getElementById('data').value);">Закончить редактирование</button>
         <button id="delate_unit">Удалить юнита</button>
 
         <div id="inspector" class="inspector-panel">
@@ -30,6 +29,13 @@
             <p>Содержание клетки: <span id="info-type"></span></p>
             <p>Описание: <span id="info-desc"></span></p>
         </div>
+
+        <button type="submit" id="save1" onclick="system.save(document.getElementById('data').value);">Закончить редактирование</button>
     </div>
     <div id="map-container"></div>
 </main>
+<script> 
+    localStorage.removeItem('save_map');
+    localStorage.removeItem('unit_real_mas');
+    localStorage.removeItem('unitMapByCoord');
+</script>

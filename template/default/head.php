@@ -13,7 +13,5 @@
     <script defer src="./template/default/js/button.js"></script>
     <script defer src="./template/default/js/scene.js"></script>
     <script defer src="./template/default/js/screen.js"></script>
-    <? if (!isset($hide_script_main)): ?>
-        <script defer src="./template/default/js/main.js"></script>
-    <? endif; ?>
+    <script defer src="./template/default/js/main.js"></script>
 </head>

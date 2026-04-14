@@ -7,8 +7,15 @@ class Scene {
     const config = data;
     this.rows = config.width;     // Берём данные из input
     this.cols = config.height;   // Берём данные из input
-    this.matrix = [];           // Двумерный массив (сетка координат)
-    this.generate();           // Сразу создаем пустую сетку
+
+    // ПРОВЕРКА: Если в данных уже есть матрица (из сохранения), используем её
+    if (config.matrix) {
+      this.matrix = config.matrix;
+    } else {
+      // Если матрицы нет, генерируем пустую
+      this.matrix = [];
+      this.generate();
+    }
   }
 
   // Заполняет матрицу значением "1" (трава). Опционально можно передать новый размер.
@@ -51,11 +58,7 @@ class Scene {
     const distance = rowDiff + colDiff;
 
     // ПУНКТ 10: Проверка и уменьшение выносливости
-    for (const current_unit of unit_real_mas) {
-      if (current_unit.coord.i === from.i && current_unit.coord.j === from.j) {
-        this.unit = current_unit;
-      }
-    }
+    this.unit = window.unitMapByCoord.get(`${from.i}_${from.j}`);
 
     if (this.unit && this.unit.stamina.current >= distance) {
         this.unit.stamina.current -= distance;
