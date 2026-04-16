@@ -33,17 +33,18 @@ class Scene {
     }
   }
 
-  // Получает значение ячейки (тип территории) по координатам
+  // Получает значение ячейки по координатам
   getCell(i, j) {
     return this.matrix[i][j];
   }
 
-  // Меняет тип территории и сохраняет всю карту в текстовое поле для экспорта
-  setCell(i, j, value, field = 'terrain') {
+  // Меняет данные в ячейке и сохраняет всю карту в текстовое поле для экспорта
+  setCell(i, j, value, field) {
     const cell = this.matrix[i]?.[j];
     if (!cell) return;
     cell[field] = value;
   }
+
 
   checkMove(from, to) {
     const rowDiff = Math.abs(from.i - to.i);
@@ -51,29 +52,128 @@ class Scene {
 
     // ПУНКТ 9: Только линейное движение (одна из разниц должна быть 0)
     if (rowDiff !== 0 && colDiff !== 0) {
-        alert("Движение только по прямой!");
-        return false;
+      alert("Движение только по прямой!");
+      return false;
     }
 
     const distance = rowDiff + colDiff;
 
     // ПУНКТ 10: Проверка и уменьшение выносливости
     this.unit = window.unitMapByCoord.get(`${from.i}_${from.j}`);
-
     if (this.unit && this.unit.stamina.current >= distance) {
-        this.unit.stamina.current -= distance;
-        return true;
+      this.unit.stamina.current -= distance;
+      return true;
     } else {
         const remaining = this.unit?.stamina?.current || 0;
         alert(`Недостаточно выносливости! Нужно ${distance}, осталось ${remaining}`);
         if (screen && screen.taken_img) {
-            screen.taken_img.classList.remove('border');
-            screen.taken = false;
-            screen.taken_unit = null;
-            screen.taken_img = null;
-            screen.startCoords = null;
+          screen.reset_state_unit(screen.taken_img);
         }
         return false;
+    }
+  }
+
+  delete_unit(i, j, tdElement) {
+    if (this.getCell(i, j).unit) {
+      this.setCell(i, j, null, 'unit'); // Удаляем из модели
+      unitMapByCoord.delete(`${i}_${j}`); // Удаляем из Map
+      tdElement.innerHTML = ''; // Очищаем визуально
+      
+      // Удаляем из общего массива юнитов
+      window.unit_real_mas = window.unit_real_mas.filter(
+        entry => !(entry.coord.i === i && entry.coord.j === j)
+      );
+      
+      flags_unit_delete = false; // Выключаем режим удаления
+    } 
+  }
+
+  set_terrain(i, j, terrainSelectValue, tdElement) {
+    if (!isNaN(terrainSelectValue) && terrainSelectValue > 0) {
+      this.setCell(i, j, terrainSelectValue, 'terrain');
+      tdElement.className = 'terrain-' + terrainSelectValue;
+      return;
+    }
+  }
+
+  set_unit(i, j, unitSelectValue, tdElement, unitMapByCoord) {
+    if (!isNaN(unitSelectValue) && unitSelectValue > 0) {
+      const unitTemplate = window.unitMap && window.unitMap[unitSelectValue];
+      if (!unitTemplate) {
+        console.warn('Юнит не найден в справочнике id:', unitSelectValue);
+        return;
+      }
+
+      if (unitMapByCoord.get(`${i}_${j}`)) {
+        this.delete_unit(i, j, tdElement);
+      }
+
+      // Создаем копию объекта юнита и размещаем в модели
+      const newUnit = JSON.parse(JSON.stringify(unitTemplate));
+      this.setCell(i, j, newUnit, 'unit');
+
+      // Создаем запись для игрового движка (с текущей выносливостью)
+      const newUnitEntry = {
+        id: newUnit.id,
+        unit: newUnit,
+        coord: { i, j },
+        stamina: {
+          current: newUnit.stamina?.max,
+          max: newUnit.stamina?.max
+        }
+      };
+
+      window.unit_real_mas.push(newUnitEntry);
+      unitMapByCoord.set(`${i}_${j}`, newUnitEntry);
+
+      // Обновляем DOM (картинка)
+      tdElement.innerHTML = '';
+      // Сохраняем фон террейна, который там был
+      tdElement.className = 'terrain-' + (this.getCell(i, j).terrain || 1);
+      
+      const img = document.createElement('img');
+      img.src = newUnit.icon;
+      img.classList.add('img-size');
+      tdElement.appendChild(img);
+
+      return;
+    }
+  }
+
+  movement_set_unit(tdElement, unit, unitMapByCoord, taken_img, startCoords, taken_unit) {
+    if (taken_unit && taken_img) {
+      const [i, j] = tdElement.dataset.coord.split('_').map(Number);
+      const targetCell = this.getCell(i, j);
+
+      if (targetCell && targetCell.unit) {
+          alert('Клетка занята!');
+          return;
+      }
+
+      // Проверяем линейность и выносливость через Scene
+      if (this.checkMove(startCoords, { i, j })) {
+        // Если всё ок, перемещаем в модели
+        this.setCell(startCoords.i, startCoords.j, null, 'unit'); // Удаляем со старой
+        this.setCell(i, j, taken_unit, 'unit'); // Ставим на новую
+
+        // Обновляем Map
+        unitMapByCoord.delete(`${startCoords.i}_${startCoords.j}`);  // Удаляем старую
+        unitMapByCoord.set(`${i}_${j}`, unit);  // Добавляем новую
+
+        // Обновляем координаты юнита
+        if (unit) {
+          unit.coord = { i, j };
+        }
+
+        // Обновляем DOM
+        tdElement.appendChild(taken_img);
+        screen.reset_state_unit(taken_img);
+
+        localStorage.setItem('unit_real_mas', JSON.stringify(window.unit_real_mas));
+        if (this.matrix) {
+            localStorage.setItem('save_map', JSON.stringify(this.matrix));
+        }
+      }
     }
   }
 }

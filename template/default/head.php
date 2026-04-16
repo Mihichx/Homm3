@@ -11,7 +11,7 @@
         <script defer src="./template/default/js/system.js"></script>
         <script defer src="./template/default/js/save_loading.js"></script>
         <script defer src="./template/default/js/type.js"></script>
-        <script defer src="./template/default/js/button.js"></script>
+        <script defer src="./template/default/js/buttons.js"></script>
         <script defer src="./template/default/js/scene.js"></script>
         <script defer src="./template/default/js/screen.js"></script>
         <script defer src="./template/default/js/main.js"></script>

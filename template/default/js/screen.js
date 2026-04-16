@@ -17,6 +17,10 @@ class Screen {
     
   }
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
   // Рисует всю таблицу с нуля (вызывается при старте или загрузке файла)
   draw() {
     let table = document.createElement('table');
@@ -111,10 +115,22 @@ class Screen {
     }
   }
 
+  // Сброс состояния взятого юнита (убираем рамку и очищаем данные)
+  reset_state_unit(taken_img) {
+    if (taken_img && taken_img.classList) {
+      taken_img.classList.remove('border');
+    }
+    this.taken = false;
+    this.taken_unit = null;
+    this.taken_img = null;
+    this.startCoords = null;
+  }
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+  // Обработчик кликов (делегирование)
   delegateHandler(event) {
     const td = event.target.closest('td');
     if (!td) return;
@@ -131,11 +147,10 @@ class Screen {
             this.updateCell(td, i, j, event);
             this.displayInfo(i, j);
         }
-        return; // ВАЖНО: В режиме редактора игровой код ниже не должен выполняться!
+        return;
     }
 
     // 2. ЛОГИКА ИГРЫ (Перемещение)
-    
     // ЛКМ — Выбор юнита
     if (event.button === 0) {
       if (this.taken === false) {
@@ -158,7 +173,6 @@ class Screen {
         }
       }
     }
-
     // ПКМ — Ход выбранным юнитом
     else if (event.button === 2) {
       if (this.taken === true) {
@@ -169,8 +183,6 @@ class Screen {
   }
 
 
-
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////|
 
 
@@ -178,135 +190,37 @@ class Screen {
   updateCell(tdElement, i, j) {
     const terrainSelect = document.getElementById('terrain-select');
     const unitSelect = document.getElementById('unit-select');
-
     const terrainSelectValue = terrainSelect ? parseInt(terrainSelect.value, 10) : 0;
     const unitSelectValue = unitSelect ? parseInt(unitSelect.value, 10) : 0;
 
-    // 1. РЕЖИМ УДАЛЕНИЯ
+    // 1. Удаляем юнит (если нажата кнопка "Удалить юнита")
     if (typeof flags_unit_delete !== 'undefined' && flags_unit_delete) {
-      if (this.scene.getCell(i, j).unit) {
-        this.scene.setCell(i, j, null, 'unit'); // Удаляем из модели
-        this.unitMapByCoord.delete(`${i}_${j}`); // Удаляем из Map
-        tdElement.innerHTML = ''; // Очищаем визуально
-        
-        // Удаляем из общего массива юнитов
-        window.unit_real_mas = window.unit_real_mas.filter(
-          entry => !(entry.coord.i === i && entry.coord.j === j)
-        );
-        
-        flags_unit_delete = false; // Выключаем режим удаления
-      }
-      return;
+      scene.delete_unit(i, j, tdElement);
     }
 
-    // 2. УСТАНОВКА ТЕРРЕЙНА (Ландшафта)
-    if (!isNaN(terrainSelectValue) && terrainSelectValue > 0) {
-      this.scene.setCell(i, j, terrainSelectValue, 'terrain');
-      tdElement.className = 'terrain-' + terrainSelectValue;
-      return;
-    }
+    // 2. Ставим территорию (если это число и она выбрана)
+    scene.set_terrain(i, j, terrainSelectValue, tdElement);
 
-    // 3. УСТАНОВКА ЮНИТА
-    if (!isNaN(unitSelectValue) && unitSelectValue > 0) {
-      // Если в клетке УЖЕ есть любой юнит — просто выходим без ошибки
-
-      const unitTemplate = window.unitMap && window.unitMap[unitSelectValue];
-      if (!unitTemplate) {
-        console.warn('Юнит не найден в справочнике id:', unitSelectValue);
-        return;
-      }
-
-      // Создаем копию объекта юнита и размещаем в модели
-      const newUnit = JSON.parse(JSON.stringify(unitTemplate));
-      this.scene.setCell(i, j, newUnit, 'unit');
-
-      // Создаем запись для игрового движка (с текущей выносливостью)
-      const newUnitEntry = {
-        id: newUnit.id,
-        unit: newUnit,
-        coord: { i, j },
-        stamina: {
-          current: newUnit.stamina?.max,
-          max: newUnit.stamina?.max
-        }
-      };
-
-      window.unit_real_mas.push(newUnitEntry);
-      this.unitMapByCoord.set(`${i}_${j}`, newUnitEntry);
-
-      // Обновляем DOM (картинка)
-      tdElement.innerHTML = '';
-      // Сохраняем фон террейна, который там был
-      tdElement.className = 'terrain-' + (this.scene.getCell(i, j).terrain || 1);
-      
-      const img = document.createElement('img');
-      img.src = newUnit.icon;
-      img.classList.add('img-size');
-      tdElement.appendChild(img);
-
-      return;
-    }
+    // 3. Ставим юнита (если это число и он выбран)
+    scene.set_unit(i, j, unitSelectValue, tdElement, this.unitMapByCoord);
   }
 
+  // Взятие юнита
   updateCell1(tdElement) {
     const img = tdElement.querySelector('img');
     if (img) {
       const [i, j] = tdElement.dataset.coord.split('_').map(Number);
-      
       this.taken_unit = this.scene.getCell(i, j).unit;
-      this.startCoords = { i, j }; // ПУНКТ 9: Запоминаем откуда идем
-
-      // Оптимизация: вместо цикла используем Map
+      this.startCoords = { i, j };
       this.unit = this.unitMapByCoord.get(`${i}_${j}`);
-      
       img.classList.add('border');
       this.taken = true;
       this.taken_img = img;
     }
   }
 
+  // Перемещение юнита
   updateCell2(tdElement) {
-    if (this.taken_unit && this.taken_img) {
-      const [i, j] = tdElement.dataset.coord.split('_').map(Number);
-      const targetCell = this.scene.getCell(i, j);
-
-      if (targetCell && targetCell.unit) {
-          alert('Клетка занята!');
-          return;
-      }
-
-      // Проверяем линейность и выносливость через Scene
-      if (this.scene.checkMove(this.startCoords, { i, j })) {
-        // Если всё ок, перемещаем в модели
-        this.scene.setCell(this.startCoords.i, this.startCoords.j, null, 'unit'); // Удаляем со старой
-        this.scene.setCell(i, j, this.taken_unit, 'unit'); // Ставим на новую
-
-        // Обновляем Map
-        this.unitMapByCoord.delete(`${this.startCoords.i}_${this.startCoords.j}`);  // Удаляем старую
-        this.unitMapByCoord.set(`${i}_${j}`, this.unit);  // Добавляем новую
-
-        // Обновляем координаты юнита
-        if (this.unit) {
-          this.unit.coord = { i, j };
-        }
-
-        // Обновляем DOM
-        tdElement.appendChild(this.taken_img);
-        this.taken_img.classList.remove('border');
-        
-        // Сброс состояния
-        this.taken = false;
-        this.taken_unit = null;
-        this.taken_img = null;
-        this.startCoords = null;
-
-        // Сохраняем массив юнитов (Map не нужно, она соберется из массива при загрузке)
-        localStorage.setItem('unit_real_mas', JSON.stringify(window.unit_real_mas));
-        if (this.scene && this.scene.matrix) {
-            // Сохраняем ОДИН РАЗ напрямую через stringify
-            localStorage.setItem('save_map', JSON.stringify(this.scene.matrix));
-        }
-      }
-    }
+    scene.movement_set_unit(tdElement, this.unit, this.unitMapByCoord, this.taken_img, this.startCoords, this.taken_unit);
   }
 }
