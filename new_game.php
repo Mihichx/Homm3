@@ -3,19 +3,14 @@
     require_once './template/default/head.php';
 ?>
 <main>
-
-    <div>
-        <h1>Герои</h1>
-    <div>
-
-    <h1>Новая игра</h1>
-
-    <div>
-        <a>Один игрок</a>
-        <a>Несколько игроков</a>
-        <a href="./company.php">Кампания</a>
-        <a>Обучение</a>
-        <a href="javascript:history.back()">Назад</a>
+    <div class="single-menu">
+        <div class="links">
+            <a href="" class="scenarios">Один игрок</a>
+            <a href="" class="multiplayer">Сетевая игра</a>
+            <a href="" class="campany">Кампания</a>
+            <a href="./create_map.php" class="tutorial">Создание карты</a>
+            <a href="./index.php" class="back">Назад</a>
+        </div>
     </div>
 
 </main>

@@ -2,8 +2,8 @@
     include_once './template/default/head.php';
 ?>
 <main class="map-main"> 
-    <h2 id="create-map">Создание карты</h2>
     <div class="controls">
+        <h2 id="create-map" class="title-create-map">Создание карты</h2>
         <?php
             $width = isset($_GET['map_width']) ? (int)$_GET['map_width'] : 10;
             $height = isset($_GET['map_height']) ? (int)$_GET['map_height'] : 10;
