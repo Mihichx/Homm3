@@ -1,6 +1,6 @@
 const urlParams = new URLSearchParams(window.location.search);
 
-// 1. Валидация размера карты
+// Валидация размера карты
 function validateMapSize(size, defaultSize = 10) {
     const parsed = parseInt(size);
     if (isNaN(parsed) || parsed < 5) return defaultSize;
@@ -8,7 +8,7 @@ function validateMapSize(size, defaultSize = 10) {
     return parsed;
 }
 
-// 2. Загрузка сохранения из localStorage
+// Загрузка сохранения из localStorage
 const savedData = localStorage.getItem('save_map');
 let currentMatrix = null;
 
@@ -20,7 +20,7 @@ if (savedData) {
     }
 }
 
-// 3. Настройка параметров карты
+// Настройка параметров карты
 let mapData = {
     width: validateMapSize(urlParams.get('map_width')),
     height: validateMapSize(urlParams.get('map_height')),
@@ -28,28 +28,21 @@ let mapData = {
 
 // Если загрузили сохранение, берем размеры из него
 if (currentMatrix) {
-    // Если вы сохраняли весь объект mapData:
     if (currentMatrix.matrix && Array.isArray(currentMatrix.matrix)) {
         mapData.width = currentMatrix.matrix.length;
         mapData.height = currentMatrix.matrix[0].length;
-        mapData.matrix = currentMatrix.matrix; // Важно передать саму сетку
+        mapData.matrix = currentMatrix.matrix;
     } 
-    // Если вы сохраняли только массив массивов:
-    else if (Array.isArray(currentMatrix)) {
-        mapData.width = currentMatrix.length;
-        mapData.height = currentMatrix[0].length;
-        mapData.matrix = currentMatrix;
-    }
 }
 
-// 1. Сначала загружаем основной массив «живых» юнитов
+// Сначала загружаем основной массив «живых» юнитов
 const savedUnits = localStorage.getItem('unit_real_mas');
 window.unit_real_mas = (savedUnits && savedUnits !== "undefined") ? JSON.parse(savedUnits) : [];
 
-// 2. Инициализируем Map (индекс для быстрого поиска)
+// Инициализируем Map (индекс для быстрого поиска)
 window.unitMapByCoord = new Map();
 
-// 3. СВЯЗЫВАЕМ: Проходим по массиву и кладем ССЫЛКИ на те же объекты в Map
+// СВЯЗЫВАЕМ: Проходим по массиву и кладем ССЫЛКИ на те же объекты в Map
 unit_real_mas.forEach(unit => {
     if (unit && unit.coord) {
         // Ключ — это строка координат, значение — сам объект юнита из массива
@@ -58,7 +51,7 @@ unit_real_mas.forEach(unit => {
     }
 });
 
-// 6. Инициализация Scene и Screen
+// Инициализация Scene и Screen
 // Scene сама поймет: брать currentMatrix или генерировать новую
 let scene = new Scene(currentMatrix ? { ...mapData, matrix: currentMatrix } : mapData);
 let screen = new Screen(scene, 'map-container');
@@ -67,14 +60,14 @@ let flags = true;
 window.unitMap = {};
 
 
-// 5. Определение режима (Редактор или Игра)
+// Определение режима (Редактор или Игра)
 // Если мы на странице create_map.php — принудительно включаем редактор
 if (window.location.pathname.includes('create_map.php')) { 
     localStorage.setItem('editMode', 'true');
 }
 const isEditMode = localStorage.getItem('editMode') === 'true';
 
-// 6. Загрузка данных из БД и отрисовка
+// Загрузка данных из БД и отрисовка
 typeList
     .setPath('answer.php') 
     .addType({code: 'terrain', name: "Ландшафт", column: "name"})
