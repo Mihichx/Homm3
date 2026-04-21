@@ -141,39 +141,20 @@ class Scene {
   }
 
   movement_set_unit(tdElement, unit, unitMapByCoord, taken_img, startCoords, taken_unit) {
-    if (taken_unit && taken_img) {
-      const [i, j] = tdElement.dataset.coord.split('_').map(Number);
-      const targetCell = this.getCell(i, j);
+      if (taken_unit && taken_img) {
+        const [i, j] = tdElement.dataset.coord.split('_').map(Number);
+        const success = UnitMovement.move(this, unit, { i, j }, startCoords, unitMapByCoord);
 
-      if (targetCell && targetCell.unit) {
-          alert('Клетка занята!');
-          return;
-      }
+        if (success) {
+          tdElement.appendChild(taken_img);
+          screen.reset_state_unit(taken_img);
 
-      // Проверяем линейность и выносливость через Scene
-      if (this.checkMove(startCoords, { i, j })) {
-        // Если всё ок, перемещаем в модели
-        this.setCell(startCoords.i, startCoords.j, null, 'unit'); // Удаляем со старой
-        this.setCell(i, j, taken_unit, 'unit'); // Ставим на новую
-
-        // Обновляем Map
-        unitMapByCoord.delete(`${startCoords.i}_${startCoords.j}`);  // Удаляем старую
-        unitMapByCoord.set(`${i}_${j}`, unit);  // Добавляем новую
-
-        // Обновляем координаты юнита
-        if (unit) {
-          unit.coord = { i, j };
-        }
-
-        // Обновляем DOM
-        tdElement.appendChild(taken_img);
-        screen.reset_state_unit(taken_img);
-
-        localStorage.setItem('unit_real_mas', JSON.stringify(window.unit_real_mas));
-        if (this.matrix) {
-            localStorage.setItem('save_map', JSON.stringify(this.matrix));
+          // Сохраняем состояние после успешного хода
+          localStorage.setItem('unit_real_mas', JSON.stringify(window.unit_real_mas));
+          if (this.matrix) {
+              localStorage.setItem('save_map', JSON.stringify(this.matrix));
+          }
         }
       }
-    }
   }
 }

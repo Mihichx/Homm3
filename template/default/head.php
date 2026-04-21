@@ -12,8 +12,10 @@
         <script defer src="./template/default/js/save_loading.js"></script>
         <script defer src="./template/default/js/type.js"></script>
         <script defer src="./template/default/js/buttons.js"></script>
+        <script defer src="./template/default/js/unitmovement.js"></script>
         <script defer src="./template/default/js/scene.js"></script>
         <script defer src="./template/default/js/screen.js"></script>
+        <script defer src="./template/default/js/loader.js"></script>
         <script defer src="./template/default/js/main.js"></script>
     <? endif; ?>
 </head>
