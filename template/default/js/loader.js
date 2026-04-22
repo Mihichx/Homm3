@@ -25,7 +25,7 @@ const MapLoader = {
                             min_damage: fullUnit?.min_damage ?? null,
                             max_damage: fullUnit?.max_damage ?? null,
                             ammunition: fullUnit?.ammunition ?? null,
-                        };
+                            };
                     });
                 }
 

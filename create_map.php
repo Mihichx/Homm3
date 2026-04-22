@@ -21,6 +21,7 @@
             Выберите файл
         </label>
 
+        <br>
         
         <select id="terrain-select" class="poly-btn"><option value="">Выберите ландшафт</option></select>
         <select id="unit-select" class="poly-btn"><option value="">Выберите юнита</option></select>

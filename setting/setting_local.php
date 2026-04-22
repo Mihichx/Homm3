@@ -2,7 +2,7 @@
 	// Настройки для подключения к бд
 	$dbAuth = [
 		'base'     => 'homm3',
-		'user'     => 'root',
-		'password' => ''
+		'user'     => 'mysql',
+		'password' => 'mysql'
 	];
 ?>
