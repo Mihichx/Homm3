@@ -30,8 +30,9 @@ body {
 }
 
 .img-size {
-    width: 40px;
-    height: 40px;
+    margin-top: -30px;
+    width: 50px;
+    height: 80px;
 }
 
 .border {
@@ -55,10 +56,10 @@ body {
 .controls input, button, select {
     margin: 5px;
     padding: 6px 12px;
-    border-radius: 4px;   /* Слегка закругленные углы */
+    border-radius: 4px;   
     border: 1px solid #666; 
-    background: #333;      /* Темный фон */
-    color: white;          /* Белый текст */
+    background: #333;      
+    color: white;          
     font-size: 14px;
     cursor: pointer;
     margin: 2px;
