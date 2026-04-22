@@ -104,6 +104,11 @@ class Scene {
         return;
       }
 
+      if (tdElement.className == 'terrain-10') {
+        alert("Нельзя ставить юнитов на воду!");
+        return;
+      }
+
       if (unitMapByCoord.get(`${i}_${j}`)) {
         this.delete_unit(i, j, tdElement);
       }
@@ -143,6 +148,13 @@ class Scene {
   movement_set_unit(tdElement, unit, unitMapByCoord, taken_img, startCoords, taken_unit) {
       if (taken_unit && taken_img) {
         const [i, j] = tdElement.dataset.coord.split('_').map(Number);
+
+        if (tdElement.className == 'terrain-10') {
+          alert("Нельзя ставить юнитов на воду!");
+          screen.reset_state_unit(taken_img);
+          return;
+        }
+
         const success = UnitMovement.move(this, unit, { i, j }, startCoords, unitMapByCoord);
 
         if (success) {

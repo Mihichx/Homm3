@@ -92,7 +92,7 @@ class Screen {
 
     if (terrainData) {
       if (typeElement) typeElement.innerText = terrainData?.name || 'Неизвестно';
-      if (descElement) descElement.innerText = '\n Территория: ' + terrainData.description || "Описание отсутствует";
+      if (descElement) descElement.innerText = '\n Территория: Описание отсутствует';
     }
 
     if (cell.unit) {
