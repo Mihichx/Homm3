@@ -104,6 +104,12 @@ class Scene {
         return;
       }
 
+      if (tdElement.className == 'terrain-10') {
+          alert("Нельзя ставить юнитов на воду!");
+          screen.reset_state_unit(taken_img);
+          return;
+      }
+
       if (unitMapByCoord.get(`${i}_${j}`)) {
         this.delete_unit(i, j, tdElement);
       }
@@ -146,13 +152,13 @@ class Scene {
       const targetCell = this.getCell(i, j);
 
       if (targetCell && targetCell.unit) {
-          alert('Клетка занята!');
-          return;
+        alert('Клетка занята!');
+        return;
       }
       if (tdElement.className == 'terrain-10') {
-          alert("Нельзя ставить юнитов на воду!");
-          screen.reset_state_unit(taken_img);
-          return;
+        alert("Нельзя ставить юнитов на воду!");
+        screen.reset_state_unit(taken_img);
+        return;
       }
       // Проверяем линейность и выносливость через Scene
       if (this.checkMove(startCoords, { i, j })) {
@@ -175,7 +181,7 @@ class Scene {
 
         localStorage.setItem('unit_real_mas', JSON.stringify(window.unit_real_mas));
         if (this.matrix) {
-            localStorage.setItem('save_map', JSON.stringify(this.matrix));
+          localStorage.setItem('save_map', JSON.stringify(this.matrix));
         }
       }
     }
