@@ -47,12 +47,48 @@ body {
 .controls {
     margin-bottom: auto;
     position: sticky;
-    top: 20px;       /* отступ от верхнего края экрана, когда блок закрепится */
+    top: 20px;       
     height: max-content;
+    width: 30%;
 }
 
 .controls input, button, select {
     margin: 5px;
+    padding: 6px 12px;
+    border-radius: 4px;   /* Слегка закругленные углы */
+    border: 1px solid #666; 
+    background: #333;      /* Темный фон */
+    color: white;          /* Белый текст */
+    font-size: 14px;
+    cursor: pointer;
+    margin: 2px;
+}
+
+.controls button:hover, .poly-btn:hover, select:hover {
+    background: #444;
+    border-color: #888;
+}
+
+#fileLoad {
+    display: none;
+}
+
+.file-label {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid #666;
+    background: #333;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 2px;
+    vertical-align: middle; 
+}
+
+.file-label:hover {
+    background: #444;
+    border-color: #888;
 }
 /* начальное меню */
 

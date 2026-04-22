@@ -11,13 +11,17 @@
         <form method="GET" id="map-size-form">
             <input name="map_width" id="map_width" value="<?= $width ?>">
             <input name="map_height" id="map_height" value="<?= $height ?>">
-            <button type="submit" style="width: 40px; height: 20px;">OK</button>
+            <button type="submit">OK</button>
         </form>
 
         <button id="gen-scene" class="poly-btn">Стереть карту</button>
         <button id="save" onclick="system.save(document.getElementById('data').value);">Сохранить</button>
-        <input type="file" id="fileLoad">
+        <label class="file-label">
+            <input type="file" id="fileLoad">
+            Выберите файл
+        </label>
 
+        
         <select id="terrain-select" class="poly-btn"><option value="">Выберите ландшафт</option></select>
         <select id="unit-select" class="poly-btn"><option value="">Выберите юнита</option></select>
 
