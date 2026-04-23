@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Мар 19 2026 г., 23:22
+-- Время создания: Апр 23 2026 г., 13:01
 -- Версия сервера: 8.0.30
 -- Версия PHP: 7.2.34
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- База данных: `hmm`
+-- База данных: `homm3`
 --
 
 -- --------------------------------------------------------
@@ -400,9 +400,9 @@ INSERT INTO `spells` (`id`, `name`, `level`, `school_id`, `mana_cost`, `icon`) V
 
 CREATE TABLE `terrain` (
   `id` int NOT NULL,
-  `name` text COLLATE utf8mb4_general_ci NOT NULL,
-  `description` text COLLATE utf8mb4_general_ci NOT NULL,
-  `img_link` text COLLATE utf8mb4_general_ci NOT NULL,
+  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `img_link` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `fraction` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -465,34 +465,34 @@ INSERT INTO `units` (`id`, `name`, `fraction`, `price`, `housing`, `AI`, `Attack
 (12, 'Zealot', 1, 450, 30, 750, 12, 10, 10, 12, 30, 7, 3, '24', 'zealot.png'),
 (13, 'Champion', 1, 1200, 33, 2100, 16, 16, 20, 25, 100, 9, 2, 'No', 'champion.png'),
 (14, 'Archangel', 1, 5000, 34, 8776, 30, 30, 50, 50, 250, 18, 1, 'No', 'archangel.png'),
-(15, 'Centaur', 2, 70, 50, 100, 5, 3, 2, 3, 8, 6, 14, 'No', ''),
-(16, 'Captain of the Centaurs', 2, 90, 57, 138, 6, 3, 2, 3, 10, 8, 14, 'No', ''),
-(17, 'Dwarf', 2, 120, 51, 138, 6, 7, 2, 4, 20, 3, 8, 'No', ''),
-(18, 'Battle Dwarf', 2, 150, 58, 209, 7, 7, 2, 4, 20, 5, 8, 'No', ''),
-(19, 'Wood elf', 2, 200, 52, 234, 9, 5, 3, 5, 15, 6, 7, '24', ''),
-(20, 'Grand elf', 2, 225, 59, 331, 9, 5, 3, 5, 15, 7, 7, '24', ''),
-(21, 'Pegasus', 2, 250, 53, 518, 9, 8, 5, 9, 30, 8, 5, 'No', ''),
-(22, 'Silver pegasus', 2, 275, 60, 532, 9, 10, 5, 9, 30, 12, 5, 'No', ''),
-(23, 'Dendroid guard', 2, 350, 54, 517, 9, 12, 10, 14, 55, 3, 3, 'No', ''),
-(24, 'Dendroid soldier', 2, 425, 61, 803, 9, 12, 10, 14, 65, 4, 3, 'No', ''),
-(25, 'Unicorn', 2, 850, 55, 1806, 15, 14, 18, 22, 90, 7, 2, 'No', ''),
-(26, 'War unicorn', 2, 950, 62, 2030, 15, 14, 18, 22, 110, 9, 2, 'No', ''),
-(27, 'Green dragon', 2, 2400, 56, 4872, 18, 18, 40, 50, 180, 10, 1, 'No', ''),
-(28, 'Gold dragon', 2, 4000, 63, 8613, 27, 27, 40, 50, 250, 16, 1, 'No', ''),
-(29, 'Gremlin', 3, 30, 93, 44, 3, 3, 1, 2, 4, 4, 16, 'No', ''),
-(30, 'Master Gremlin', 3, 40, 100, 66, 4, 4, 1, 2, 4, 5, 16, '8', ''),
-(31, 'Stone Gargoyle', 3, 130, 94, 165, 6, 6, 2, 3, 16, 6, 9, 'No', ''),
-(32, 'Obsidian Gargoyle', 3, 160, 101, 201, 7, 7, 2, 3, 16, 9, 9, 'No', ''),
-(33, 'Stone Golem', 3, 150, 95, 260, 7, 10, 4, 5, 30, 3, 6, 'No', ''),
-(34, 'Iron Golem', 3, 200, 102, 412, 9, 10, 4, 5, 35, 5, 6, 'No', ''),
-(35, 'Mage', 3, 350, 96, 570, 11, 8, 7, 9, 25, 5, 4, '24', ''),
-(36, 'Arch Mage', 3, 450, 103, 680, 12, 9, 7, 9, 30, 7, 4, '24', ''),
-(37, 'Genie', 3, 550, 97, 884, 12, 12, 13, 16, 40, 7, 3, 'No', ''),
-(38, 'Master Genie', 3, 600, 104, 942, 12, 12, 13, 16, 40, 11, 3, 'No', ''),
-(39, 'Naga', 3, 1100, 98, 1814, 16, 13, 20, 20, 110, 5, 2, 'No', ''),
-(40, 'Naga Queen', 3, 1600, 105, 2840, 16, 13, 30, 30, 110, 7, 2, 'No', ''),
-(41, 'Giant', 3, 2000, 99, 3718, 19, 16, 40, 60, 150, 7, 1, 'No', ''),
-(42, 'Titan', 3, 5000, 106, 7500, 24, 24, 40, 60, 300, 11, 1, '24', '');
+(15, 'Centaur', 2, 70, 50, 100, 5, 3, 2, 3, 8, 6, 14, 'No', 'centaur.png'),
+(16, 'Captain of the Centaurs', 2, 90, 57, 138, 6, 3, 2, 3, 10, 8, 14, 'No', 'centaur-captain.png'),
+(17, 'Dwarf', 2, 120, 51, 138, 6, 7, 2, 4, 20, 3, 8, 'No', 'dwarf.png'),
+(18, 'Battle Dwarf', 2, 150, 58, 209, 7, 7, 2, 4, 20, 5, 8, 'No', 'battle-dwarf.png'),
+(19, 'Wood elf', 2, 200, 52, 234, 9, 5, 3, 5, 15, 6, 7, '24', 'wood-elf.png'),
+(20, 'Grand elf', 2, 225, 59, 331, 9, 5, 3, 5, 15, 7, 7, '24', 'grand-elf.png'),
+(21, 'Pegasus', 2, 250, 53, 518, 9, 8, 5, 9, 30, 8, 5, 'No', 'pegasus.png'),
+(22, 'Silver pegasus', 2, 275, 60, 532, 9, 10, 5, 9, 30, 12, 5, 'No', 'silver-pegasus.png'),
+(23, 'Dendroid guard', 2, 350, 54, 517, 9, 12, 10, 14, 55, 3, 3, 'No', 'dendroid-guard.png'),
+(24, 'Dendroid soldier', 2, 425, 61, 803, 9, 12, 10, 14, 65, 4, 3, 'No', 'dendroid-soldier.png'),
+(25, 'Unicorn', 2, 850, 55, 1806, 15, 14, 18, 22, 90, 7, 2, 'No', 'unicorn.png'),
+(26, 'War unicorn', 2, 950, 62, 2030, 15, 14, 18, 22, 110, 9, 2, 'No', 'war-unicorn.png'),
+(27, 'Green dragon', 2, 2400, 56, 4872, 18, 18, 40, 50, 180, 10, 1, 'No', 'green-dragon.png'),
+(28, 'Gold dragon', 2, 4000, 63, 8613, 27, 27, 40, 50, 250, 16, 1, 'No', 'gold-dragon.png'),
+(29, 'Gremlin', 3, 30, 93, 44, 3, 3, 1, 2, 4, 4, 16, 'No', 'gremlin.png'),
+(30, 'Master Gremlin', 3, 40, 100, 66, 4, 4, 1, 2, 4, 5, 16, '8', 'master-gremlin.png'),
+(31, 'Stone Gargoyle', 3, 130, 94, 165, 6, 6, 2, 3, 16, 6, 9, 'No', 'stone-gargoyle.png'),
+(32, 'Obsidian Gargoyle', 3, 160, 101, 201, 7, 7, 2, 3, 16, 9, 9, 'No', 'obsidian-gargoyle.png'),
+(33, 'Stone Golem', 3, 150, 95, 260, 7, 10, 4, 5, 30, 3, 6, 'No', 'stone-golem.png'),
+(34, 'Iron Golem', 3, 200, 102, 412, 9, 10, 4, 5, 35, 5, 6, 'No', 'iron-golem.png'),
+(35, 'Mage', 3, 350, 96, 570, 11, 8, 7, 9, 25, 5, 4, '24', 'mage.png'),
+(36, 'Arch Mage', 3, 450, 103, 680, 12, 9, 7, 9, 30, 7, 4, '24', 'archmage.png'),
+(37, 'Genie', 3, 550, 97, 884, 12, 12, 13, 16, 40, 7, 3, 'No', 'genie.png'),
+(38, 'Master Genie', 3, 600, 104, 942, 12, 12, 13, 16, 40, 11, 3, 'No', 'master-genie.png'),
+(39, 'Naga', 3, 1100, 98, 1814, 16, 13, 20, 20, 110, 5, 2, 'No', 'naga.png'),
+(40, 'Naga Queen', 3, 1600, 105, 2840, 16, 13, 30, 30, 110, 7, 2, 'No', 'naga-queen.png'),
+(41, 'Giant', 3, 2000, 99, 3718, 19, 16, 40, 60, 150, 7, 1, 'No', 'giant.png'),
+(42, 'Titan', 3, 5000, 106, 7500, 24, 24, 40, 60, 300, 11, 1, '24', 'titan.png');
 
 --
 -- Индексы сохранённых таблиц
