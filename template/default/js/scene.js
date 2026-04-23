@@ -13,10 +13,13 @@ class Scene {
       this.matrix = config.matrix;
     } else {
       // Если матрицы нет, генерируем пустую
-      this.matrix = [];
       this.generate();
     }
   }
+
+  
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
   // Заполняет матрицу значением "1" (трава). Опционально можно передать новый размер.
   generate(width, height) {
@@ -33,12 +36,16 @@ class Scene {
     }
   }
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
   // Получает значение ячейки по координатам
   getCell(i, j) {
     return this.matrix[i][j];
   }
 
-  // Меняет данные в ячейке и сохраняет всю карту в текстовое поле для экспорта
+  // Меняет данные в ячейке и сохраняет всю карту
   setCell(i, j, value, field) {
     const cell = this.matrix[i]?.[j];
     if (!cell) return;
@@ -46,11 +53,14 @@ class Scene {
   }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
   checkMove(from, to) {
     const rowDiff = Math.abs(from.i - to.i);
     const colDiff = Math.abs(from.j - to.j);
 
-    // ПУНКТ 9: Только линейное движение (одна из разниц должна быть 0)
+    // Только линейное движение (одна из разниц должна быть 0)
     if (rowDiff !== 0 && colDiff !== 0) {
       alert("Движение только по прямой!");
       return false;
@@ -58,7 +68,7 @@ class Scene {
 
     const distance = rowDiff + colDiff;
 
-    // ПУНКТ 10: Проверка и уменьшение выносливости
+    // Проверка и уменьшение выносливости
     this.unit = window.unitMapByCoord.get(`${from.i}_${from.j}`);
     if (this.unit && this.unit.stamina.current >= distance) {
       this.unit.stamina.current -= distance;
@@ -72,6 +82,10 @@ class Scene {
         return false;
     }
   }
+
+  
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
   delete_unit(i, j, tdElement) {
     if (this.getCell(i, j).unit) {
@@ -88,66 +102,73 @@ class Scene {
     } 
   }
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
   set_terrain(i, j, terrainSelectValue, tdElement) {
-    if (!isNaN(terrainSelectValue) && terrainSelectValue > 0) {
-      this.setCell(i, j, terrainSelectValue, 'terrain');
-      tdElement.className = 'terrain-' + terrainSelectValue;
-      return;
-    }
+    this.setCell(i, j, terrainSelectValue, 'terrain');
+    tdElement.className = 'terrain-' + terrainSelectValue;
+    return;
   }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
   set_unit(i, j, unitSelectValue, tdElement, unitMapByCoord) {
-    if (!isNaN(unitSelectValue) && unitSelectValue > 0) {
-      const unitTemplate = window.unitMap && window.unitMap[unitSelectValue];
-      if (!unitTemplate) {
-        console.warn('Юнит не найден в справочнике id:', unitSelectValue);
-        return;
-      }
-
-      if (tdElement.className == 'terrain-10') {
-          alert("Нельзя ставить юнитов на воду!");
-          screen.reset_state_unit(taken_img);
-          return;
-      }
-
-      if (unitMapByCoord.get(`${i}_${j}`)) {
-        this.delete_unit(i, j, tdElement);
-      }
-
-      // Создаем копию объекта юнита и размещаем в модели
-      const newUnit = JSON.parse(JSON.stringify(unitTemplate));
-      this.setCell(i, j, newUnit, 'unit');
-
-      // Создаем запись для игрового движка (с текущей выносливостью)
-      const newUnitEntry = {
-        id: newUnit.id,
-        unit: newUnit,
-        coord: { i, j },
-        stamina: {
-          current: newUnit.stamina?.max,
-          max: newUnit.stamina?.max
-        }
-      };
-
-      window.unit_real_mas.push(newUnitEntry);
-      unitMapByCoord.set(`${i}_${j}`, newUnitEntry);
-
-      // Обновляем DOM (картинка)
-      tdElement.innerHTML = '';
-      // Сохраняем фон террейна, который там был
-      tdElement.className = 'terrain-' + (this.getCell(i, j).terrain || 1);
-      
-      const img = document.createElement('img');
-      img.src = newUnit.icon;
-      img.classList.add('img-size');
-      tdElement.appendChild(img);
-
+    const unitTemplate = window.unitMap && window.unitMap[unitSelectValue];
+    if (!unitTemplate) {
+      console.warn('Юнит не найден в справочнике id:', unitSelectValue);
       return;
     }
+
+    if (tdElement.className == 'terrain-10') {
+        alert("Нельзя ставить юнитов на воду!");
+        screen.reset_state_unit(taken_img);
+        return;
+    }
+
+    if (unitMapByCoord.get(`${i}_${j}`)) {
+      this.delete_unit(i, j, tdElement);
+    }
+
+    // Создаем копию объекта юнита и размещаем в модели
+    const newUnit = JSON.parse(JSON.stringify(unitTemplate));
+    this.setCell(i, j, newUnit, 'unit');
+
+    // Создаем запись для игрового движка (с текущей выносливостью)
+    const newUnitEntry = {
+      id: newUnit.id,
+      unit: newUnit,
+      coord: { i, j },
+      stamina: {
+        current: newUnit.stamina?.max,
+        max: newUnit.stamina?.max
+      }
+    };
+
+    window.unit_real_mas.push(newUnitEntry);
+    unitMapByCoord.set(`${i}_${j}`, newUnitEntry);
+
+    // Обновляем DOM (картинка)
+    tdElement.innerHTML = '';
+    // Сохраняем фон террейна, который там был
+    tdElement.className = 'terrain-' + (this.getCell(i, j).terrain);
+    
+    const img = document.createElement('img');
+    img.src = newUnit.icon;
+    img.classList.add('img-size');
+    tdElement.appendChild(img);
+    return;
   }
 
-  movement_set_unit(tdElement, unit, unitMapByCoord, taken_img, startCoords, taken_unit) {
-    if (taken_unit && taken_img) {
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  movement_set_unit(tdElement, unit, unitMapByCoord, taken_img, startCoords) {
+    if (taken_img) {
       const [i, j] = tdElement.dataset.coord.split('_').map(Number);
       const targetCell = this.getCell(i, j);
 
@@ -155,16 +176,18 @@ class Scene {
         alert('Клетка занята!');
         return;
       }
+
       if (tdElement.className == 'terrain-10') {
         alert("Нельзя ставить юнитов на воду!");
         screen.reset_state_unit(taken_img);
         return;
       }
-      // Проверяем линейность и выносливость через Scene
+
+      // Проверяем линейность и выносливость
       if (this.checkMove(startCoords, { i, j })) {
         // Если всё ок, перемещаем в модели
         this.setCell(startCoords.i, startCoords.j, null, 'unit'); // Удаляем со старой
-        this.setCell(i, j, taken_unit, 'unit'); // Ставим на новую
+        this.setCell(i, j, unit.unit, 'unit'); // Ставим на новую
 
         // Обновляем Map
         unitMapByCoord.delete(`${startCoords.i}_${startCoords.j}`);  // Удаляем старую

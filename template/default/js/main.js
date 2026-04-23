@@ -54,11 +54,10 @@ unit_real_mas.forEach(unit => {
 // Инициализация Scene и Screen
 // Scene сама поймет: брать currentMatrix или генерировать новую
 let scene = new Scene(currentMatrix ? { ...mapData, matrix: currentMatrix } : mapData);
-let screen = new Screen(scene, 'map-container');
+let screen = new Screen(scene);
 let flags_unit_delete = false; 
 let flags = true;
 window.unitMap = {};
-
 
 // Определение режима (Редактор или Игра)
 // Если мы на странице create_map.php — принудительно включаем редактор
@@ -72,7 +71,7 @@ MapLoader.loadResources(() => {
     const units = typeList.list.units ? typeList.list.units.getList() : null;
     const terrains = typeList.list.terrain ? typeList.list.terrain.getList() : null;
 
-    // --- Б: ЗАПОЛНЕНИЕ СЕЛЕКТОРОВ  ---
+    // --- ЗАПОЛНЕНИЕ СЕЛЕКТОРОВ ---
     if (isEditMode) {
         const terrainSelector = document.getElementById('terrain-select');
         const unitSelector = document.getElementById('unit-select');
@@ -107,19 +106,7 @@ MapLoader.loadResources(() => {
         }
     }
 
-    // --- В: КНОПКА "СТЕРЕТЬ КАРТУ"  ---
-    const clearBtn = document.querySelector('button[onclick*="generate"]') || Array.from(document.querySelectorAll('button')).find(el => el.textContent === 'Стереть карту');
-    if (clearBtn) {
-        clearBtn.onclick = (e) => {
-            e.preventDefault();
-            if (confirm("Вы точно хотите полностью стереть карту?")) {
-                localStorage.removeItem('save_map');
-                location.reload();
-            }
-        };
-    }
-
-    // --- Г: ОТРИСОВКА  ---
+    // --- ОТРИСОВКА ---
     const container = document.getElementById('map-container');
     if (container) container.innerHTML = '';
     screen.draw(); 
