@@ -3,15 +3,13 @@
   Рисует таблицу и обрабатывает клики пользователя.
 */
 class Screen {
-  constructor(scene, containerId) {
-    this.scene = scene;                                        // Связываем экран с данными сцены
-    this.container = document.getElementById(containerId);    // Где рисовать таблицу
-    this.taken = false;                                      // Отслеживание взятия юнита
-    this.units = [];                                        // Массив с юнитами
+  constructor(scene) {
+    this.scene = scene;                                          // Связываем экран с данными сцены
+    this.container = document.getElementById('map-container');  // Где рисовать таблицу
+    this.taken = false;                                        // Отслеживание взятия юнита
+    this.units = [];                                          // Массив с юнитами
     this.unitMapByCoord = window.unitMapByCoord;
-    // ИСПРАВЛЕНИЕ: Вешаем событие на КОНТЕЙНЕР, а не на несуществующую таблицу
     this.container.addEventListener('mousedown', this.delegateHandler.bind(this));
-
     // Отключаем меню на всем контейнере
     this.container.oncontextmenu = (e) => e.preventDefault();
     
@@ -29,33 +27,6 @@ class Screen {
     for (let i = 0; i < this.scene.matrix.length; i++) {
       let tr = document.createElement('tr');
       for (let j = 0; j < this.scene.matrix[i].length; j++) {
-        let td = document.createElement('td');
-
-        const cell = this.scene.getCell(i, j);
-        td.className = 'terrain-' + cell.terrain;
-        td.dataset.coord = `${i}_${j}`;
-        if (cell.unit) {
-          let img = document.createElement('img');
-          img.src = cell.unit.icon;
-          img.classList.add('img-size');
-          td.appendChild(img);
-        }
-        tr.appendChild(td);  // Добавление ячейки(td) в строку(tr)
-      }
-      table.appendChild(tr);  // Добавление строки(tr) в таблицу
-    }
-    this.container.innerHTML = '';  // Очищает контейнер
-    this.container.appendChild(table);  // Добавляем таблицу в контейнер
-  }
-
-  draw_map_game(matrix) {
-    let table = document.createElement('table');
-    table.className = 'map-table';
-    table.onclick = (e) => this.delegateHandler(e);
-
-    for (let i = 0; i < matrix.length; i++) {
-      let tr = document.createElement('tr');
-      for (let j = 0; j < matrix[i].length; j++) {
         let td = document.createElement('td');
 
         const cell = this.scene.getCell(i, j);
@@ -144,8 +115,8 @@ class Screen {
     // 1. ЛОГИКА РЕДАКТОРА (Только ЛКМ)
     if (isEditor) {
         if (event.button === 0) { // Только левая кнопка
-            this.updateCell(td, i, j, event);
-            this.displayInfo(i, j);
+          this.updateCell(td, i, j, event);
+          this.displayInfo(i, j);
         }
         return;
     }
@@ -156,28 +127,17 @@ class Screen {
       if (this.taken === false) {
         this.displayInfo(i, j);
         this.updateCell1(td); 
-        } else {
-          // Если юнит уже в руках, ЛКМ просто обновляет инфо-панель
-          this.displayInfo(i, j);
-          // Если кликнули на другого юнита — перевыбираем
-          if (td.querySelector('img')) {
-          if (this.taken_img) this.taken_img.classList.remove('border');
-          this.updateCell1(td);
-          } else {
-          if (this.taken_img) {
-            this.taken_img.classList.remove('border');
-            this.taken = false;
-            this.taken_unit = null;
-            this.taken_img = null;
-          }
-        }
+      } else {
+        this.displayInfo(i, j);
+        screen.reset_state_unit(this.taken_img);
+        this.updateCell1(td);
       }
     }
     // ПКМ — Ход выбранным юнитом
     else if (event.button === 2) {
       if (this.taken === true) {
-          this.updateCell2(td); 
-          this.displayInfo(i, j);
+        this.updateCell2(td); 
+        this.displayInfo(i, j);
       }
     }
   }
@@ -193,16 +153,20 @@ class Screen {
     const terrainSelectValue = terrainSelect ? parseInt(terrainSelect.value, 10) : 0;
     const unitSelectValue = unitSelect ? parseInt(unitSelect.value, 10) : 0;
 
-    // 1. Удаляем юнит (если нажата кнопка "Удалить юнита")
+    // Удаляем юнит (если нажата кнопка "Удалить юнита")
     if (typeof flags_unit_delete !== 'undefined' && flags_unit_delete) {
       scene.delete_unit(i, j, tdElement);
     }
 
-    // 2. Ставим территорию (если это число и она выбрана)
-    scene.set_terrain(i, j, terrainSelectValue, tdElement);
+    // Ставим территорию (если это число и она выбрана)
+    if (!isNaN(terrainSelectValue) && terrainSelectValue > 0) {
+      scene.set_terrain(i, j, terrainSelectValue, tdElement);
+    }
 
-    // 3. Ставим юнита (если это число и он выбран)
-    scene.set_unit(i, j, unitSelectValue, tdElement, this.unitMapByCoord);
+    // Ставим юнита (если это число и он выбран)
+    if (!isNaN(unitSelectValue) && unitSelectValue > 0) {
+      scene.set_unit(i, j, unitSelectValue, tdElement, this.unitMapByCoord);
+    }
   }
 
   // Взятие юнита
@@ -210,7 +174,6 @@ class Screen {
     const img = tdElement.querySelector('img');
     if (img) {
       const [i, j] = tdElement.dataset.coord.split('_').map(Number);
-      this.taken_unit = this.scene.getCell(i, j).unit;
       this.startCoords = { i, j };
       this.unit = this.unitMapByCoord.get(`${i}_${j}`);
       img.classList.add('border');
@@ -221,6 +184,6 @@ class Screen {
 
   // Перемещение юнита
   updateCell2(tdElement) {
-    scene.movement_set_unit(tdElement, this.unit, this.unitMapByCoord, this.taken_img, this.startCoords, this.taken_unit);
+    scene.movement_set_unit(tdElement, this.unit, this.unitMapByCoord, this.taken_img, this.startCoords);
   }
 }

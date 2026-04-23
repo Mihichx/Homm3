@@ -4,25 +4,30 @@ const delate_unit = document.getElementById('delate_unit') ?? null;
 
 // Кнопка "Очистить"
 if(gen_scene) {
-    gen_scene.onclick = function() {
-        const widthInput = document.getElementById('map_width');
-        const heightInput = document.getElementById('map_height');
-        const width = widthInput ? parseInt(widthInput.value, 10) : scene.rows;
-        const height = heightInput ? parseInt(heightInput.value, 10) : scene.cols;
+    gen_scene.onclick = (e) => {
+        e.preventDefault();
+        if (confirm("Вы точно хотите полностью стереть карту?")) {
+            const widthInput = document.getElementById('map_width');
+            const heightInput = document.getElementById('map_height');
+            const width = widthInput ? parseInt(widthInput.value, 10) : scene.rows;
+            const height = heightInput ? parseInt(heightInput.value, 10) : scene.cols;
 
-        scene.generate(width, height);     // Сбрасываем массив в 1 с текущим размером
-        screen.draw();                    // Рисуем заново    
-        unit_real_mas = [];              // Очищаем массив юнитов
-        screen.unitMapByCoord.clear();  // Очищаем Map координат юнитов
+            scene.generate(width, height);     // Сбрасываем массив в 1 с текущим размером
+            screen.draw();                    // Рисуем заново    
+            unit_real_mas = [];              // Очищаем массив юнитов
+            screen.unitMapByCoord.clear();  // Очищаем Map координат юнитов
 
-        document.getElementById('info-coords').innerText = 'Выберите клетку';  // Стираем данные информации
-        document.getElementById('info-type').innerText = '';                   // 
-        document.getElementById('info-desc').innerText = '';                   // 
-        document.getElementById('terrain-select').value = '';                  // Сбрасываем селект
-        document.getElementById('unit-select').value = '';                     //
+            document.getElementById('info-coords').innerText = 'Выберите клетку';  // Стираем данные информации
+            document.getElementById('info-type').innerText = '';                   // 
+            document.getElementById('info-desc').innerText = '';                   // 
+            document.getElementById('terrain-select').value = '';                  // Сбрасываем селект
+            document.getElementById('unit-select').value = '';                     //
 
-        if (widthInput) widthInput.value = scene.rows;
-        if (heightInput) heightInput.value = scene.cols;
+            if (widthInput) widthInput.value = scene.rows;
+            if (heightInput) heightInput.value = scene.cols;
+            localStorage.removeItem('save_map');
+            location.reload();
+        }
     }
 }   
 
