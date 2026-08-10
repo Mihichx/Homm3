@@ -1,4 +1,5 @@
 <?php
+
 header("Content-type: text/css; charset: UTF-8");
 
 session_start();
@@ -11,7 +12,7 @@ if (file_exists(__DIR__ . '/../../../setting/setting.php')) {
 
 $dsn = "mysql:host=localhost;dbname=" . $dbAuth['base'] . ";charset=utf8mb4";
 $opt = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
 ];
 
@@ -29,7 +30,6 @@ try {
         echo "    background-size: cover !important;\n";
         echo "}\n";
     }
-    
 } catch (PDOException $e) {
     error_log('Terrain CSS Error: ' . $e->getMessage());
     echo "/* DB Error - Check logs */";

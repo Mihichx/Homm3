@@ -43,7 +43,7 @@ if(end_step_elm) {
         localStorage.setItem('unit_real_mas', JSON.stringify(unit_real_mas));
         localStorage.setItem('unitMapByCoord', JSON.stringify([...window.unitMapByCoord]));
         screen.reset_state_unit(screen.taken_img);
-        alert("Ход завершён");
+        alert("Ход завершён.");
     }
 }
 

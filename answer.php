@@ -1,4 +1,4 @@
-<?
+<?php
     session_start();
 
     if (file_exists(__DIR__ . '/setting/setting.php')) {
@@ -43,7 +43,6 @@
         header('Content-Type: application/json');
         echo json_encode($dbResult->fetchAll());
         $dbResult->closeCursor();
-        
     } catch (PDOException $e) {
         header('Content-Type: application/json');
         http_response_code(500);

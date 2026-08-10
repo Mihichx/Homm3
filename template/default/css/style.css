@@ -80,7 +80,7 @@ body {
     border-color: #888;
 }
 
-#fileLoad {
+#file-load {
     display: none;
 }
 
@@ -141,7 +141,7 @@ body {
     text-align: center;
 }
 
-.creators-Title {
+.creators-title {
     font-size: 60px;
     color: #fff;
     text-align: center;
@@ -162,4 +162,8 @@ body {
 
 .git-link:hover {
     color: aquamarine;
+}
+
+.block {
+    color: #9b9b9b !important;
 }

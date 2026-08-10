@@ -62,7 +62,7 @@ class Scene {
 
     // Только линейное движение (одна из разниц должна быть 0)
     if (rowDiff !== 0 && colDiff !== 0) {
-      alert("Движение только по прямой!");
+      alert("Движение только по прямой.");
       return false;
     }
 
@@ -75,7 +75,7 @@ class Scene {
       return true;
     } else {
         const remaining = this.unit?.stamina?.current || 0;
-        alert(`Недостаточно выносливости! Нужно ${distance}, осталось ${remaining}`);
+        alert(`Недостаточно выносливости. Нужно ${distance}, осталось ${remaining}`);
         if (screen && screen.taken_img) {
           screen.reset_state_unit(screen.taken_img);
         }
@@ -124,7 +124,7 @@ class Scene {
     }
 
     if (tdElement.className == 'terrain-10') {
-        alert("Нельзя ставить юнитов на воду!");
+        alert("Нельзя ставить юнитов на воду.");
         screen.reset_state_unit(taken_img);
         return;
     }
@@ -173,12 +173,12 @@ class Scene {
       const targetCell = this.getCell(i, j);
 
       if (targetCell && targetCell.unit) {
-        alert('Клетка занята!');
+        alert('Клетка занята.');
         return;
       }
 
       if (tdElement.className == 'terrain-10') {
-        alert("Нельзя ставить юнитов на воду!");
+        alert("Нельзя ставить юнитов на воду.");
         screen.reset_state_unit(taken_img);
         return;
       }
