@@ -61,9 +61,9 @@ let system = (function() {
         }
         
         // создавать паузу выполнения
-        async pause(miliseconds) {
+        async pause(milliseconds) {
             let promise = new Promise((resolve, reject) => {
-                setTimeout(() => resolve("готово!"), miliseconds)
+                setTimeout(() => resolve("готово!"), milliseconds)
             });
             
             let result = await promise; 
